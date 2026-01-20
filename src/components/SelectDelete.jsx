@@ -30,7 +30,6 @@ const MultiSelectList = () => {
   const startSelectionMode = (id) => {
 
     Vibration.vibrate(100); // stronger vibration
-
     setSelectionMode(true);
     setSelected([id]); // first selected item
   };

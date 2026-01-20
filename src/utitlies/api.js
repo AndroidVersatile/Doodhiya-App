@@ -1,98 +1,77 @@
-import axios from 'axios';
-import { BASE_URL } from './config';
-import { Platform } from 'react-native';
-// Create Axios instance 
 
-const api = axios.create({
-    baseURL: BASE_URL,
-    timeout: 5000,
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
+// import axios from "axios";
+// import * as Keychain from "react-native-keychain";
 
-// Request interceptor
-api.interceptors.request.use(
-    async (config) => {
-        // Example: Add auth token if you have one
-        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NDEwMTFjNzdhNWNmZjdiOTdjMDcwMiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2NTg2ODEyMSwiZXhwIjoxNzY2NDcyOTIxfQ.cZXvJttO85Gu4aqWvnEE06PQnrKJqHGVoCmBwQBqFZE'
-        if (token) config.headers.Authorization = `Bearer ${token}`;
-
-        console.log('Request:', config.method.toUpperCase(), config.url, config.data);
-        return config;
-    },
-    (error) => {
-        console.error('Request error:', error);
-        return Promise.reject(error);
-    }
-);
-
-// Response interceptor
-api.interceptors.response.use(
-    (response) => {
-        console.log('Response:', response.status, response.data);
-        return response;
-    },
-    (error) => {
-        if (error.response) {
-            // Server responded with a status other than 2xx
-            console.error('Response error:', error.response.status, error.response.data);
-        } else if (error.request) {
-            // Request was made but no response received
-            console.error('No response:', error.request);
-        } else {
-            console.error('Error:', error.message);
-        }
-        return Promise.reject(error);
-    }
-);
-
-export default api;
-// import axios from 'axios';
-//
-
-// // Change this to your computer’s local IP
-// const LOCAL_IP = '192.168.1.100';
-
-// // Dynamically select baseURL
-// const getBaseUrl = () => {
-//   if (Platform.OS === 'android') {
-//     // Android emulator
-//     return 'http://10.0.2.2:5000/api';
-//   } else if (Platform.OS === 'ios') {
-//     // iOS simulator
-//     return 'http://localhost:5000/api';
-//   } else {
-//     // Physical device (both Android and iOS)
-//     return `http://${LOCAL_IP}:5000/api`;
-//   }
-// };
-
-// const api = axios.create({
-//   baseURL: getBaseUrl(),
-//   timeout: 5000,
-//   headers: { 'Content-Type': 'application/json' },
+// import { logoutUser, setAccessToken } from "../redux/slice/authSlice";
+// import { store } from "../redux/store/store";
+// import { getRefreshToken } from "./tokenStorage";
+// import { BASE_URL } from "./config";
+// const API = axios.create({
+//     baseURL: BASE_URL,
+//     timeout: 10000,
 // });
 
-// // Request interceptor
-// api.interceptors.request.use(
-//   (config) => {
-//     console.log('Request:', config.method.toUpperCase(), config.url, config.data);
+// /* ---------------- REQUEST ---------------- */
+// API.interceptors.request.use((config) => {
+//     const token = store.getState().auth.accessToken;
+
+//     if (token) {
+//         config.headers.Authorization = `Bearer ${token}`;
+//     }
+
 //     return config;
-//   },
-//   (error) => Promise.reject(error)
+// });
+
+// /* ---------------- RESPONSE ---------------- */
+// API.interceptors.response.use(
+//     (response) => response,
+//     async (error) => {
+//         const originalRequest = error.config;
+
+//         if (error.response?.status === 401 && !originalRequest._retry) {
+//             originalRequest._retry = true;
+
+//             try {
+//                 //  get refresh token from Keychain
+
+//                 const refreshToken = await getRefreshToken();
+//                 if (refreshToken) throw new Error("No refresh token");
+
+//                 //  request new access token
+//                 const res = await axios.post(
+//                     `${BASE_URL}/api/auth/refreshToken`,
+//                     { token: refreshToken }
+//                 );
+
+//                 const newAccessToken = res.data.accessToken;
+
+//                 //  update Redux (single source of truth)
+//                 store.dispatch(setAccessToken(newAccessToken));
+
+//                 //  retry original request
+//                 originalRequest.headers.Authorization =
+//                     `Bearer ${newAccessToken}`;
+
+//                 return API(originalRequest);
+//             } catch (err) {
+//                 // 2. Handle Refresh Failure
+//                 // Only logout if the server actually rejected the refresh token (400, 401, 403)
+//                 // If the refresh call itself failed due to internet, don't logout!
+//                 if (err.response) {
+//                     store.dispatch(logoutUser());
+//                 }
+//                 return Promise.reject(err);
+//             }
+//         }
+//         // 3. Handle Network Errors (No Internet)
+//         // If there's no response object, the request never reached the server
+//         if (!error.response) {
+//             console.log("Interceptor: Network Error detected. No logout triggered.");
+//             // We return a custom error so the Thunk can recognize it as 'NETWORK_ERROR'
+//             return Promise.reject(new Error("NETWORK_ERROR"));
+//         }
+//         return Promise.reject(error);
+//     }
 // );
 
-// // Response interceptor
-// api.interceptors.response.use(
-//   (response) => {
-//     console.log('Response:', response.status, response.data);
-//     return response;
-//   },
-//   (error) => {
-//     console.error('API error:', error.response ? error.response.data : error.message);
-//     return Promise.reject(error);
-//   }
-// );
-
-// export default api;
+// export default API;
