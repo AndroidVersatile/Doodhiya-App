@@ -1,8 +1,9 @@
-import { ActivityIndicator, Alert, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Alert, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View, Linking } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import BackHeader from '../components/BackHeader'
 import Icon from 'react-native-vector-icons/MaterialIcons';
+
 import { Responsive } from '../theme/responsive';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../redux/slice/authSlice';
@@ -10,6 +11,23 @@ import { logoutUser } from '../redux/slice/authSlice';
 const SettingsScreen = ({ navigation }) => {
     const { logoutLoading } = useSelector((state) => state.auth)
     const dispatch = useDispatch();
+    const handlePrivacyPolicy = () => {
+        Linking.openURL('https://androidversatile.github.io/Doodhiya-Privacy-Policy/');
+    }
+    const handleDeleteAccount = () => {
+        Alert.alert(
+            "Delete Account",
+            "Are you sure you want to delete your account? This will permanently remove your profile and images.",
+            [
+                { text: "Cancel", style: "cancel" },
+                {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: () => Linking.openURL('mailto:support@versatileitsolution.com?subject=Account Deletion Request&body=Please delete my account associated with this email.')
+                }
+            ]
+        );
+    };
     // Grouping settings into sections for better organization
     const accountSettings = [
         {
@@ -17,11 +35,11 @@ const SettingsScreen = ({ navigation }) => {
             icon: 'account-circle',
             onPress: () => navigation.navigate('ProfileScreen')
         },
-        // {
-        //     id: 6, title: 'Change Password',
-        //     icon: 'lock-outline',
-        //     onPress: () => Alert.alert('Notice', 'Coming soon...')
-        // },
+        {
+            id: 6, title: 'Delete Account',
+            icon: 'delete-forever',
+            onPress: () => handleDeleteAccount(),
+        },
 
     ];
 
@@ -31,7 +49,7 @@ const SettingsScreen = ({ navigation }) => {
     ];
 
     const legalSettings = [
-        { id: 2, title: 'Privacy Policy', icon: 'description', onPress: () => navigation.navigate('PrivacyPolicyScreen') },
+        { id: 2, title: 'Privacy Policy', icon: 'description', onPress: () => handlePrivacyPolicy() },
         { id: 3, title: 'Terms & Conditions', icon: 'gavel', onPress: () => navigation.navigate('TermsAndConditionsScreen') },
     ];
 

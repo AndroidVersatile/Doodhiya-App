@@ -32,7 +32,6 @@ const CustomerFormScreen = ({ route, navigation }) => {
   const isLoading = addLoading || updateLoading;
   const editingId = route.params?.item?.id ?? null;
 
-
   const [autoCode, setAutoCode] = useState(true);
   const [customerCode, setCustomerCode] = useState("");
   const [name, setName] = useState("");

@@ -2,7 +2,7 @@ import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import BackHeader from '../components/BackHeader'
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 import { Responsive } from '../theme/responsive';
 const PrivacyPolicyScreen = () => {
     return (
@@ -53,7 +53,7 @@ const PrivacyPolicyScreen = () => {
                 <View style={styles.section}>
                     <Text style={styles.subHeading} accessibilityRole="header">3. Data Protection & Sharing</Text>
                     <Text style={styles.paragraph}>
-                        We <Text style={styles.bold}  accessibilityRole="text">do not sell or share</Text> your personal data with third parties.
+                        We <Text style={styles.bold} accessibilityRole="text">do not sell or share</Text> your personal data with third parties.
                         While we take industry-standard measures to protect your information, complete security
                         cannot be guaranteed.
                     </Text>

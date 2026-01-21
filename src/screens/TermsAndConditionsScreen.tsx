@@ -22,7 +22,7 @@ const TermsAndConditionsScreen = () => {
                     accessibilityLabel="Introduction"
                 >
                     <Text style={styles.paragraph}>
-                        By using the <Text style={styles.bold}>Milk Management App</Text>, you
+                        By using the <Text style={styles.bold}>Doodhiya, Milk Management App</Text>, you
                         agree to comply with and be bound by the following terms. Please read
                         them carefully.
                     </Text>

@@ -6,7 +6,7 @@ import BackHeader from '../components/BackHeader'
 import { Responsive } from '../theme/responsive'
 const ContactUsScreen = () => {
     const handleEmailPress = () => {
-        Linking.openURL('mailto:support@milkmanagementapp.com')
+        Linking.openURL('mailto:support@versatileitsolution.com')
     }
 
     const handlePhonePress = () => {
@@ -44,7 +44,7 @@ const ContactUsScreen = () => {
                         </View>
                         <View style={styles.textContainer}>
                             <Text style={styles.label}>Email Support</Text>
-                            <Text style={styles.value}>support@milkmanagementapp.com</Text>
+                            <Text style={styles.value}>support@versatileitsolution.com</Text>
                         </View>
                         <MaterialIcons name="chevron-right" size={Responsive.fontSize[20]} color="#C7C7CC" />
                     </TouchableOpacity>
@@ -65,7 +65,7 @@ const ContactUsScreen = () => {
                         </View>
                         <View style={styles.textContainer}>
                             <Text style={styles.label}>Call Us</Text>
-                            <Text style={styles.value}>+91 98765 43210</Text>
+                            <Text style={styles.value}>+91 99833 33276</Text>
                         </View>
                         <MaterialIcons name="chevron-right" size={Responsive.fontSize[20]} color="#C7C7CC" />
                     </TouchableOpacity>
@@ -83,7 +83,7 @@ const ContactUsScreen = () => {
                         </View>
                         <View style={styles.textContainer}>
                             <Text style={styles.label}>Support Hours</Text>
-                            <Text style={styles.value}>Mon - Sat, 9:00 AM – 6:00 PM</Text>
+                            <Text style={styles.value}>Mon - Sat, 10:00 AM - 7:00 PM</Text>
                         </View>
                     </View>
                 </View>
