@@ -20,7 +20,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Dropdown } from 'react-native-element-dropdown';
 import { getCustomers, addMilkEntry, getCustomerById, getMilkEntryById, updateMilkEntryById } from '../db/database';
 import BackHeader from "../components/BackHeader";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 import { Responsive } from "../theme/responsive";
 import { createMilk, editMilk } from "../redux/slice/milkSlice";
@@ -32,6 +32,7 @@ const formatDate = (d = new Date()) => {
 };
 
 const MilkEntryScreen = ({ route, navigation }) => {
+  const insets = useSafeAreaInsets()
   const editingId = route.params?.item.id ?? null;
   const { user } = useSelector((state) => state.auth);
   const { customersList } = useSelector((state) => state.customer);
@@ -252,9 +253,9 @@ const MilkEntryScreen = ({ route, navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.mainContainer}>
+    <View style={[styles.mainContainer, { paddingTop: insets.top + Responsive.spacing[10] }]} >
       <BackHeader title={editingId ? 'Edit Milk Entry' : 'New Milk Entry'} bg={'#f6f7fb'} />
-      <StatusBar barStyle={'dark-content'} backgroundColor={'#f6f7fb'} />
+      <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={{ flex: 1 }}
@@ -461,7 +462,7 @@ const MilkEntryScreen = ({ route, navigation }) => {
           <View style={{ height: Responsive.spacing[40] }} />
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 };
 

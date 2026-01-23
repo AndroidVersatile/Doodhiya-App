@@ -18,7 +18,7 @@ import ContactUsScreen from './src/screens/ContactUsScreen';
 import { useDispatch, useSelector } from 'react-redux';
 import RNBootSplash from "react-native-bootsplash";
 // import NetInfo from "@react-native-community/netinfo";
-import NoInternetScreen from './src/screens/NoInternetScreen';
+// import NoInternetScreen from './src/screens/NoInternetScreen';
 import { listenToAuthChanges } from './src/firebase/authlistner';
 
 import SignUpScreen from './src/screens/SignUpScreen';
@@ -48,18 +48,18 @@ const App = () => {
   const onNavigationReady = () => {
     RNBootSplash.hide({ fade: true });
   };
-  useEffect(() => {
-    const requestStoragePermission = async () => {
-      if (Platform.OS === 'android') {
-        await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
-        );
-      }
-    };
-    requestStoragePermission();
-    // onNavigationReady()
+  // useEffect(() => {
+  //   const requestStoragePermission = async () => {
+  //     if (Platform.OS === 'android') {
+  //       await PermissionsAndroid.request(
+  //         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+  //       );
+  //     }
+  //   };
+  //   requestStoragePermission();
+  //   // onNavigationReady()
 
-  }, []);
+  // }, []);
   return (
     <NavigationContainer ref={navigationRef}
       onReady={onNavigationReady}
@@ -70,10 +70,7 @@ const App = () => {
           animation: 'fade_from_bottom',
           orientation: 'portrait'
         }}
-
-
         >
-
           {!user ? (
             <>
               <Stack.Screen name="Login" component={LoginScreen} />
@@ -107,10 +104,3 @@ const App = () => {
 
 export default App
 
-const styles = StyleSheet.create({
-  loader: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-})

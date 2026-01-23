@@ -152,7 +152,7 @@ const CustomerCard = ({ customers, navigation, onDelete, search, setSelectionMod
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {selectionModeChild && (
         <View style={styles.topBar} accessibilityRole="toolbar" accessibilityLabel="Selection options">>
           <TouchableOpacity
@@ -201,141 +201,10 @@ const CustomerCard = ({ customers, navigation, onDelete, search, setSelectionMod
           />
         </ScrollView>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#f4f4f4',
-//     padding: wp('2%'),
-//   },
-//   listPadding: {
-//     paddingBottom: hp('4%'),
-//   },
-//   headerRow: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     backgroundColor: '#FFFFFF',
-//     paddingVertical: hp('1.8%'),
-//     paddingHorizontal: wp('3%'),
-//     borderBottomWidth: 1,
-//     borderBottomColor: '#EEEEEE',
-//     elevation: 2,
-//     shadowColor: '#000',
-//     shadowOffset: { width: 0, height: 2 },
-//     shadowOpacity: 0.1,
-//     shadowRadius: 2,
-//     borderRadius: wp('3%'),
-//   },
-//   headerCell: {
-//     fontSize: hp('1.4%'), // Proportional font size
-//     fontWeight: '800',
-//     color: '#9E9E9E',
-//     letterSpacing: 0.5,
-//   },
-//   row: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     paddingVertical: hp('1.8%'),
-//     paddingHorizontal: wp('3%'),
-//     marginHorizontal: wp('2%'),
-//     marginTop: hp('0.6%'),
-//     borderRadius: wp('2%'),
-//   },
-//   evenRow: { backgroundColor: '#FFFFFF' },
-//   oddRow: { backgroundColor: '#FAFAFA' },
-//   cell: {
-//     fontSize: hp('1.7%'),
-//     color: '#444',
-//   },
-//   indexCell: {
-//     fontSize: hp('1.5%'),
-//     color: '#9E9E9E',
-//     fontWeight: '600',
-//   },
-//   nameText: {
-//     fontSize: hp('1.9%'),
-//     fontWeight: '600',
-//     color: '#1A1A1A',
-//   },
-//   rateText: {
-//     fontSize: hp('1.8%'),
-//     fontWeight: '700',
-//     color: '#2E7D32',
-//   },
-//   badge: {
-//     paddingVertical: hp('0.5%'),
-//     paddingHorizontal: wp('2%'),
-//     borderRadius: wp('1.5%'),
-//     alignItems: 'center',
-//     marginRight: wp('2%'),
-//   },
-//   badgeText: {
-//     fontSize: hp('1.4%'),
-//     fontWeight: '700',
-//     textTransform: 'uppercase',
-//   },
-//   actionContainer: {
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//     flexDirection: 'row',
-//     gap: wp('2%'),
-//   },
-//   deleteIconButton: {
-//     padding: wp('2%'),
-//     backgroundColor: '#FFF5F5',
-//     borderRadius: wp('2%'),
-//   },
-//   // selection mode styles
-//   topBar: {
-//     flexDirection: "row",
-//     marginBottom: hp('1.5%'),
-//     padding: wp('3%'),
-//     justifyContent: "space-between",
-//   },
-//   topBtn: {
-//     backgroundColor: "#b9a1a1", // Consistent theme color
-//     paddingVertical: hp('1%'),
-//     paddingHorizontal: wp('4%'),
-//     borderRadius: wp('2%'),
-//   },
-//   topBtnText: {
-//     color: "#fff",
-//     fontWeight: "bold",
-//     fontSize: hp('1.7%'),
-//   },
-//   selectedItem: {
-//     backgroundColor: "#E8EAF6", // Subtle blue-grey for selection
-//   },
-//   checkbox: {
-//     width: wp('6%'),
-//     height: wp('6%'),
-//     borderRadius: wp('1.5%'),
-//     borderWidth: 2,
-//     borderColor: "#777",
-//     marginRight: wp('2.5%'),
-//     justifyContent: "center",
-//     alignItems: "center",
-//   },
-//   checkedBox: {
-//     backgroundColor: "#b9a1a1",
-//     borderColor: "#b9a1a1",
-//   },
-//   checkMark: {
-//     color: "white",
-//     fontWeight: "bold",
-//     fontSize: hp('1.5%'),
-//   },
-//   emptyContainer: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     marginTop: hp('10%'),
-//     backgroundColor: '#f4f4f4',
-//   },
-// });
 const styles = StyleSheet.create({
   container: {
     flex: 1,

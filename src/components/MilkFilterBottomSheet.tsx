@@ -398,7 +398,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         paddingHorizontal: Responsive.size.wp(5),
         paddingTop: Responsive.size.hp(1.5),
-        paddingBottom: Responsive.size.hp(4),
+        paddingBottom: Responsive.spacing[50],
         borderTopLeftRadius: Responsive.radius[24],
         borderTopRightRadius: Responsive.radius[24],
     },

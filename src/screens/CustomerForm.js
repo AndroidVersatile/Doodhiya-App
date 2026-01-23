@@ -17,7 +17,7 @@ import {
 } from "react-native";
 
 import BackHeader from "../components/BackHeader";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Responsive } from "../theme/responsive";
 import { useDispatch, useSelector } from "react-redux";
@@ -43,7 +43,7 @@ const CustomerFormScreen = ({ route, navigation }) => {
   const [rate, setRate] = useState("");
   const [errors, setErrors] = useState({});
   const [focusedField, setFocusedField] = useState(null);
-
+  const insets = useSafeAreaInsets()
   // refs
   const scrollRef = useRef(null);
   const fieldPositions = useRef({});
@@ -256,9 +256,9 @@ const CustomerFormScreen = ({ route, navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.mainContainer}>
+    <View style={[styles.mainContainer, { paddingTop: insets.top + Responsive.spacing[10] }]} >
       <BackHeader title={editingId ? `Edit ${name}` : 'Add Customer'} bg={'#f6f7fb'} />
-      <StatusBar barStyle={'dark-content'} backgroundColor={'#f6f7fb'} />
+      <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -550,7 +550,7 @@ const CustomerFormScreen = ({ route, navigation }) => {
           <View style={{ height: Responsive.spacing[40] }} />
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 };
 

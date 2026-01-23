@@ -14,7 +14,7 @@ import {
     BackHandler,
     Platform,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -40,7 +40,7 @@ const MilkListScreen = () => {
     const uid = user?.uid ?? null;
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const sheet = useRef<TrueSheet>(null);
-
+    const insets = useSafeAreaInsets()
     // // Present the sheet 
     // const present = () => {
     //     Keyboard.dismiss();
@@ -209,8 +209,12 @@ const MilkListScreen = () => {
     }
     return (
 
-        <SafeAreaView style={styles.container}>
-            <StatusBar barStyle={'dark-content'} backgroundColor={'#f8f9fa'} />
+        <View style={[styles.container, {
+            paddingTop: insets.top + Responsive.spacing[10],
+            paddingBottom: insets.bottom
+
+        }]} >
+            <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
 
             {/* Using your custom BackHeader */}
             <BackHeader title={'Milk Entries'} bg={'#f8f9fa'} />
@@ -366,7 +370,7 @@ const MilkListScreen = () => {
                 sheet={sheet}
 
             />
-        </SafeAreaView>
+        </View>
     );
 };
 
@@ -491,11 +495,11 @@ const styles = StyleSheet.create({
     },
     floatBtn: {
         position: 'absolute',
-        bottom: Responsive.size.hp(4),
+        bottom: Responsive.size.hp(7.5),
         right: Responsive.size.wp(6),
         backgroundColor: '#b9a1a1',
-        width: Responsive.spacing[60],
-        height: Responsive.spacing[60],
+        width: Responsive.spacing[55],
+        height: Responsive.spacing[55],
         borderRadius: Responsive.radius[30],
         justifyContent: 'center',
         alignItems: 'center',

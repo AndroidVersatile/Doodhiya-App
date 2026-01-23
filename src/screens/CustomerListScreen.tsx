@@ -15,7 +15,7 @@ import {
   Platform,
 } from 'react-native';
 
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import { getCustomers, deleteCustomer, deleteAllMilkEntriesForCustomer } from '../db/database';
@@ -45,6 +45,7 @@ const CustomerListScreen = () => {
   const cities = useMemo(() => ["Delhi", "Faridabad", "Bhilwara"], []);
   const milkTypes = useMemo(() => ["cow", "buffalo", "mixed"], []);
   const { fetchLoading: fetchCustomerLoading, customersList } = useSelector((state) => state.customer);
+  const insets = useSafeAreaInsets();
 
   // const present = () => {
   //   Keyboard.dismiss();
@@ -169,8 +170,9 @@ const CustomerListScreen = () => {
   });
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={'#f4f4f4'} />
+    <View style={[styles.container, { paddingTop: insets.top + Responsive.spacing[10] }]} >
+      <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
+
       {!selectionMode && (
         <>
           <BackHeader title={'Customer Master'} bg={'#f4f4f4'} />
@@ -252,7 +254,7 @@ const CustomerListScreen = () => {
         }
         sheet={sheet}
       />
-    </SafeAreaView>
+    </View>
 
   );
 }

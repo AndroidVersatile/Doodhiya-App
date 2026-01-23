@@ -168,7 +168,7 @@ const MilkCard = ({ milkentries, navigation, search, onDelete, filters, }) => {
     );
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             {milkentries.length === 0 ? <EmptyComponent /> : (
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}
                     accessibilityRole="scrollbar"
@@ -185,7 +185,7 @@ const MilkCard = ({ milkentries, navigation, search, onDelete, filters, }) => {
                     />
                 </ScrollView>
             )}
-        </SafeAreaView>
+        </View>
     );
 };
 

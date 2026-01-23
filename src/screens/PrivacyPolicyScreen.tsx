@@ -6,8 +6,8 @@ import BackHeader from '../components/BackHeader'
 import { Responsive } from '../theme/responsive';
 const PrivacyPolicyScreen = () => {
     return (
-        <SafeAreaView style={styles.mainContainer}>
-            <StatusBar backgroundColor={'#F8F9FA'} barStyle={'dark-content'} />
+        <SafeAreaView style={styles.mainContainer} >
+            <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
             <BackHeader title={'Privacy Policy'} bg={'#F8F9FA'} />
 
             <ScrollView

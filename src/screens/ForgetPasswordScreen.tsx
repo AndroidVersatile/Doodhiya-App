@@ -1,7 +1,7 @@
 
 import { ActivityIndicator, Animated, Image, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View, Vibration, Alert, Dimensions, KeyboardAvoidingView, Platform } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,6 +23,7 @@ const ForgetPasswordScreen = ({ navigation }) => {
     const emailInputRef = useRef(null);
     const passwordInputRef = useRef(null);
     const [errors, setErrors] = useState({});
+    const insets = useSafeAreaInsets();
 
     const dispatch = useDispatch();
     console.log('Error', authError);
@@ -107,9 +108,8 @@ const ForgetPasswordScreen = ({ navigation }) => {
     };
 
     return (
-        <SafeAreaView style={styles.mainContainer}>
-            <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'} />
-
+        <View style={[styles.mainContainer, { paddingTop: insets.top + Responsive.spacing[10] }]} >
+            <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
 
             <BackHeader title={'Forget Password'} bg={'#fff'} />
             <KeyboardAvoidingView
@@ -119,11 +119,11 @@ const ForgetPasswordScreen = ({ navigation }) => {
                 <ScrollView
                     ref={scrollRef}
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: Responsive.spacing[40] }}
+                    contentContainerStyle={{ paddingBottom: insets.bottom + Responsive.spacing[30] }}
                 >
                     <View style={styles.imageView}>
                         <Image
-                            source={require('../assets/images/milkpng.png')}
+                            source={require('../assets/images/AppLogo.png')}
                             resizeMode='contain'
                             style={styles.imageStyle}
                             importantForAccessibility="no-hide-descendants"
@@ -184,7 +184,7 @@ const ForgetPasswordScreen = ({ navigation }) => {
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
-        </SafeAreaView>
+        </View>
     )
 }
 

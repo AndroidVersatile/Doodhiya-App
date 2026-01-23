@@ -1,13 +1,15 @@
 
 import { ActivityIndicator, Animated, Image, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View, Vibration, Alert, Dimensions, KeyboardAvoidingView, Platform, Keyboard } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import { Responsive } from '../theme/responsive';
 import { loginWithEmail, loginWithGoogle } from '../redux/slice/authSlice';
 import Entypo from 'react-native-vector-icons/Entypo';
 const LoginScreen = ({ navigation }) => {
+    const insets = useSafeAreaInsets();
+
     const { loginLoading, error, googleLoading } = useSelector((state: any) => state.auth)
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -162,11 +164,11 @@ const LoginScreen = ({ navigation }) => {
     }, []);
 
     return (
-        <SafeAreaView style={styles.mainContainer}>
-            <StatusBar backgroundColor={'#b9a1a1'} barStyle={'light-content'} />
+        <View style={[styles.mainContainer]} >
+            <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
             {/* Redesigned Header */}
-            <View style={styles.header}>
+            <View style={[styles.header, { paddingTop: insets.top + Responsive.spacing[10] }]}>
                 <View>
                     <Text style={styles.welcomeText}>Welcome! </Text>
                     <Text style={styles.headerTitle} accessibilityRole="header">Let's Login</Text>
@@ -184,12 +186,12 @@ const LoginScreen = ({ navigation }) => {
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
-                        paddingBottom: keyboardHeight.current + Responsive.spacing[40],
+                        paddingBottom: insets.bottom + Responsive.spacing[25],
                     }}
                 >
                     <View style={styles.imageView}>
                         <Image
-                            source={require('../assets/images/milkpng.png')}
+                            source={require('../assets/images/AppLogo.png')}
                             resizeMode='contain'
                             style={styles.imageStyle}
                             accessibilityElementsHidden
@@ -349,7 +351,7 @@ const LoginScreen = ({ navigation }) => {
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
-        </SafeAreaView>
+        </View>
     )
 }
 
@@ -395,7 +397,7 @@ const styles = StyleSheet.create({
 
     imageStyle: {
         width: Responsive.size.wp(80),
-        height: Responsive.size.hp(14),
+        height: Responsive.size.hp(16),
     },
 
     formSection: {

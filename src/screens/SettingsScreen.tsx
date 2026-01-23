@@ -1,6 +1,6 @@
 import { ActivityIndicator, Alert, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View, Linking } from 'react-native'
 import React, { useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import BackHeader from '../components/BackHeader'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../redux/slice/authSlice';
 
 const SettingsScreen = ({ navigation }) => {
+    const insets = useSafeAreaInsets()
     const { logoutLoading } = useSelector((state) => state.auth)
     const dispatch = useDispatch();
     const handlePrivacyPolicy = () => {
@@ -77,8 +78,8 @@ const SettingsScreen = ({ navigation }) => {
     );
 
     return (
-        <SafeAreaView style={styles.container}>
-            <StatusBar backgroundColor={'#F8F9FA'} barStyle={'dark-content'} />
+        <View style={[styles.container, { paddingTop: insets.top + Responsive.spacing[10] }]} >
+            <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
             <BackHeader title={'Settings'} bg={'#F8F9FA'} />
 
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent} accessible={true}
@@ -127,9 +128,9 @@ const SettingsScreen = ({ navigation }) => {
                         )}
                 </TouchableOpacity>
 
-                <Text style={styles.versionText} importantForAccessibility="no">Version 1.0.1</Text>
+                <Text style={styles.versionText} importantForAccessibility="no">Version 1.0.5</Text>
             </ScrollView>
-        </SafeAreaView>
+        </View>
     )
 }
 

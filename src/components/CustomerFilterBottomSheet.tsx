@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         paddingHorizontal: Responsive.spacing[20],
         paddingTop: Responsive.spacing[12],
-        paddingBottom: Responsive.spacing[24],
+        paddingBottom: Responsive.spacing[50],
         borderTopLeftRadius: Responsive.radius[24],
         borderTopRightRadius: Responsive.radius[24],
     },

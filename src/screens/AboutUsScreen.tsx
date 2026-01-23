@@ -1,11 +1,12 @@
 import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import BackHeader from '../components/BackHeader'
 import { Responsive } from '../theme/responsive';
 const AboutUsScreen = () => {
+        const insets = useSafeAreaInsets()
     return (
-        <SafeAreaView style={styles.mainContainer}>
+        <View style={[styles.mainContainer,{ paddingTop: insets.top + Responsive.spacing[10] }]}>
             <StatusBar backgroundColor={'#F8F9FA'} barStyle={'dark-content'} />
             <BackHeader title={'About Us'} bg={'#F8F9FA'} />
 
@@ -63,7 +64,7 @@ const AboutUsScreen = () => {
                     </Text>
                 </View>
             </ScrollView>
-        </SafeAreaView>
+        </View>
     )
 }
 

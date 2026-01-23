@@ -1,7 +1,7 @@
 
 import { ActivityIndicator, Animated, Image, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View, Vibration, Alert, Dimensions, KeyboardAvoidingView, Platform } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,7 +24,7 @@ const SignUpScreen = ({ navigation }) => {
     const timerRef = useRef(null)
     const dispatch = useDispatch();
     // console.log('Error', error);
-
+    const insets = useSafeAreaInsets()
     const focusableFields = {
         email: emailInputRef,
         password: passwordInputRef,
@@ -101,8 +101,8 @@ const SignUpScreen = ({ navigation }) => {
     };
 
     return (
-        <SafeAreaView style={styles.mainContainer}>
-            <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'} />
+        <View style={[styles.mainContainer, { paddingTop: insets.top + Responsive.spacing[10] }]} >
+            <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
             <BackHeader title={'Sign Up'} bg={'#fff'} />
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -118,7 +118,7 @@ const SignUpScreen = ({ navigation }) => {
                     <View style={styles.imageView} importantForAccessibility="no"
                         accessibilityElementsHidden={true}>
                         <Image
-                            source={require('../assets/images/milkpng.png')}
+                            source={require('../assets/images/AppLogo.png')}
                             resizeMode='contain'
                             style={styles.imageStyle}
                         />
@@ -267,7 +267,7 @@ const SignUpScreen = ({ navigation }) => {
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
-        </SafeAreaView>
+        </View>
     )
 }
 

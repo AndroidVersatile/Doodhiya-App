@@ -1,7 +1,7 @@
 
 import { ActivityIndicator, Animated, Image, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View, Vibration, Alert, Dimensions, KeyboardAvoidingView, Platform, Keyboard, BackHandler } from 'react-native'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import BackHeader from '../components/BackHeader';
@@ -24,7 +24,7 @@ const ProfileScreen = () => {
     const [loading, setLoading] = useState(false);
     const [localPhoto, setLocalPhoto] = useState(null);
     const [sheetVisible, setSheetVisible] = useState(false);
-
+    const insets = useSafeAreaInsets();
     const fieldPositions = useRef({});
     const scrollRef = useRef(null);
     const emailInputRef = useRef(null);
@@ -40,7 +40,13 @@ const ProfileScreen = () => {
     const dispatch = useDispatch()
     const sheet = useRef<TrueSheet>(null)
 
-
+    const memoizedPhotoURL = useMemo(() => {
+        if (profile?.photoURL) {
+            // This only updates when the actual photoURL from Redux changes
+            return `${profile.photoURL}?t=${new Date().getTime()}`;
+        }
+        return null;
+    }, [profile?.photoURL]); // 👈 Only recalculates when the photo actually changes
     // const present = () => {
     //     Keyboard.dismiss();
     //     requestAnimationFrame(async () => {
@@ -118,20 +124,17 @@ const ProfileScreen = () => {
         }, [])
     );
     const getProfileImage = () => {
-        // Priority 1: Instant preview from the phone's gallery
         if (localPhoto) return { uri: localPhoto };
 
-        // Priority 2: Custom Cloudinary photo from Redux (with cache buster)
-        if (profile?.photoURL) {
-            return { uri: `${profile.photoURL}?t=${new Date().getTime()}` };
+        // Use the memoized URL here
+        if (memoizedPhotoURL) {
+            return { uri: memoizedPhotoURL };
         }
 
-        // Priority 3: Google/Firebase Auth photo
         if (user?.photoURL) {
             return { uri: user.photoURL };
         }
 
-        // Priority 4: Default fallback asset
         return require('../assets/images/profile.png');
     };
     const handleGalleryPick = async () => {
@@ -294,8 +297,8 @@ const ProfileScreen = () => {
 
 
     return (
-        <SafeAreaView style={styles.mainContainer} accessible={false}>
-            <StatusBar backgroundColor={'#f6f7fb'} barStyle={'dark-content'} />
+        <View style={[styles.mainContainer, { paddingTop: insets.top + Responsive.spacing[10] }]} accessible={false} >
+            <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
             <BackHeader title={'Edit Profile'} bg={'#f6f7fb'}
                 accessibilityRole="header"
                 accessibilityLabel="Edit profile screen"
@@ -564,7 +567,7 @@ const ProfileScreen = () => {
 
                 </View>
             </TrueSheet>
-        </SafeAreaView>
+        </View>
     )
 }
 
@@ -721,7 +724,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         paddingHorizontal: Responsive.spacing[24],
         paddingTop: Responsive.spacing[16],
-        paddingBottom: Responsive.spacing[32],
+        paddingBottom: Responsive.spacing[40],
         borderTopLeftRadius: Responsive.radius[28],
         borderTopRightRadius: Responsive.radius[28],
     },

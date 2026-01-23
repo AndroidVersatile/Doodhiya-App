@@ -1,12 +1,13 @@
 import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import BackHeader from '../components/BackHeader'
 import { Responsive } from '../theme/responsive'
 const TermsAndConditionsScreen = () => {
+    const insets = useSafeAreaInsets()
     return (
-        <SafeAreaView style={styles.mainContainer}>
-            <StatusBar backgroundColor={'#F8F9FA'} barStyle={'dark-content'} />
+        <View style={[styles.mainContainer, { paddingTop: insets.top + Responsive.spacing[10] }]} >
+            <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
             <BackHeader title={'Terms & Conditions'} bg={'#F8F9FA'} />
 
             <ScrollView
@@ -119,7 +120,7 @@ const TermsAndConditionsScreen = () => {
                     </Text>
                 </View>
             </ScrollView>
-        </SafeAreaView>
+        </View>
 
     )
 }

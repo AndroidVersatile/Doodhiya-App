@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, StatusBar, ScrollView, ActivityIndicator, RefreshControl, Image, BackHandler, ToastAndroid, Platform, } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useSelector, useDispatch } from 'react-redux';
 import { Responsive } from '../theme/responsive';
@@ -25,7 +25,7 @@ const HomeScreen = ({ navigation }) => {
   const isLoading = fetchCustomerLoading || fetchMilkLoading;
   const backPressedOnce = useRef(false);
   const exitTimeoutRef = useRef(null)
-
+  const insets = useSafeAreaInsets();
 
   useFocusEffect(
     useCallback(() => {
@@ -124,12 +124,11 @@ const HomeScreen = ({ navigation }) => {
     return <CustomLoader />
   }
   return (
-    <SafeAreaView style={styles.container} accessible={false} >
-      <StatusBar barStyle={'light-content'} backgroundColor={'#1A237E'} animated={true}
-        showHideTransition="slide"
-      />
+    <View style={styles.container} accessible={false} >
+      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+
       {/* 1. Modern Header */}
-      <View style={styles.header}
+      <View style={[styles.header, { paddingTop: insets.top + Responsive.spacing[10] }]}
         accessible={true}
         accessibilityRole="header"
         accessibilityLabel={`Home header. ${getGreeting()}, ${getUserName()}`}>
@@ -191,7 +190,7 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContent}
+      <ScrollView contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom }]}
         accessibilityRole="scrollbar"
         accessibilityLabel="Home screen content"
         refreshControl={
@@ -278,7 +277,7 @@ const HomeScreen = ({ navigation }) => {
           />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

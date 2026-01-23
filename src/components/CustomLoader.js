@@ -1,21 +1,22 @@
 import { ActivityIndicator, StatusBar, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Responsive } from '../theme/responsive'
 
 const CustomLoader = () => {
+     const insets = useSafeAreaInsets()
     return (
-        <SafeAreaView style={styles.mainContainer}
+        <View style={[styles.mainContainer,{ paddingTop: insets.top + Responsive.spacing[10] }]}
             accessible={true}
             accessibilityRole="progressbar"
             accessibilityLabel="Loading"
             accessibilityHint="Please wait while content is loading"
         >
-            <StatusBar barStyle={'dark-content'} backgroundColor={'#F8F9FA'} />
+            <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
             <ActivityIndicator size={Responsive.fontSize[30]} color={'blue'} />
             <Text style={styles.pleaseWaitText} accessibilityRole="text"
                 accessibilityLiveRegion="polite">Please wait.....</Text>
-        </SafeAreaView>
+        </View>
     )
 }
 
