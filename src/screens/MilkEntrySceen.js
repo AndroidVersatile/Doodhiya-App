@@ -512,13 +512,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#e2e8f0",
     paddingHorizontal: Responsive.spacing[12],
-    paddingVertical: Responsive.spacing[6],
+    paddingVertical: Responsive.spacing[8],
     borderRadius: Responsive.radius[8],
     backgroundColor: "#f8fafc",
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    minHeight: Responsive.spacing[24]
+    minHeight: Responsive.spacing[24],
+
   },
   inputFocused: {
     borderColor: '#b9a1a1',
@@ -535,8 +536,9 @@ const styles = StyleSheet.create({
     borderRadius: Responsive.radius[8],
     backgroundColor: '#f8fafc',
     paddingHorizontal: Responsive.spacing[4],
-    height: Responsive.size.hp(5.5), // roughly hp('5.5%'), ensures placeholder shows
-    justifyContent: 'center'
+    height: Responsive.size.hp(5.5),
+    justifyContent: 'center',
+    paddingVertical: Responsive.spacing[8],
   },
   dropdown: {
     height: Responsive.size.hp(6),
