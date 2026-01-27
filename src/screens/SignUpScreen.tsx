@@ -111,7 +111,7 @@ const SignUpScreen = ({ navigation }) => {
                 <ScrollView
                     ref={scrollRef}
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: Responsive.spacing[40] }}
+                    contentContainerStyle={{ paddingBottom: insets.bottom + Responsive.spacing[10] }}
                     accessible={true}
                     accessibilityRole="scrollbar"
                 >

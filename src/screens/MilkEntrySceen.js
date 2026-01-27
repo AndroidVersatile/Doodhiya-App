@@ -266,7 +266,7 @@ const MilkEntryScreen = ({ route, navigation }) => {
         }
       >
         <ScrollView
-          contentContainerStyle={styles.container}
+          contentContainerStyle={[styles.container, { paddingBottom: insets.bottom + Responsive.spacing[10] }]}
           keyboardShouldPersistTaps="handled"
           ref={scrollRef}
         >
@@ -519,6 +519,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     minHeight: Responsive.spacing[24],
+    color: '#000'
 
   },
   inputFocused: {

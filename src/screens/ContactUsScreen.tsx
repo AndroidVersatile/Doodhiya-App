@@ -20,7 +20,7 @@ const ContactUsScreen = () => {
             <BackHeader title={'Contact Us'} bg={'#F8F9FA'} />
 
             <ScrollView
-                contentContainerStyle={styles.contentContainer}
+                contentContainerStyle={[styles.contentContainer,{ paddingBottom: insets.bottom + Responsive.spacing[10] }]}
                 showsVerticalScrollIndicator={false}
             >
                 <View style={styles.headerSection}>

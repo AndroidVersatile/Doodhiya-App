@@ -315,7 +315,7 @@ const LoginScreen = ({ navigation }) => {
                                 {loginLoading ? <ActivityIndicator size={Responsive.fontSize[28]} color={'#fff'} /> : <Text style={styles.loginBtnText}>Login</Text>}
                             </TouchableOpacity>
                             <TouchableOpacity
-                                disabled={loginLoading}
+                                disabled={googleLoading}
                                 onPress={handleGoogleLogin}
                                 activeOpacity={0.7}
                                 accessibilityRole="button"

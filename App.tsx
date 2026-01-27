@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import RNBootSplash from "react-native-bootsplash";
 // import NetInfo from "@react-native-community/netinfo";
 // import NoInternetScreen from './src/screens/NoInternetScreen';
+import { SystemBars } from 'react-native-edge-to-edge';
 import { listenToAuthChanges } from './src/firebase/authlistner';
 
 import SignUpScreen from './src/screens/SignUpScreen';
@@ -48,23 +49,13 @@ const App = () => {
   const onNavigationReady = () => {
     RNBootSplash.hide({ fade: true });
   };
-  // useEffect(() => {
-  //   const requestStoragePermission = async () => {
-  //     if (Platform.OS === 'android') {
-  //       await PermissionsAndroid.request(
-  //         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
-  //       );
-  //     }
-  //   };
-  //   requestStoragePermission();
-  //   // onNavigationReady()
-
-  // }, []);
   return (
-    <NavigationContainer ref={navigationRef}
-      onReady={onNavigationReady}
-    >
-      <SafeAreaProvider>
+    <SafeAreaProvider>
+      <SystemBars style='dark' />
+      <NavigationContainer ref={navigationRef}
+        onReady={onNavigationReady}
+      >
+
         <Stack.Navigator screenOptions={{
           headerShown: false,
           animation: 'fade_from_bottom',
@@ -95,8 +86,8 @@ const App = () => {
           )}
 
         </Stack.Navigator>
-      </SafeAreaProvider>
-    </NavigationContainer>
+      </NavigationContainer>
+    </SafeAreaProvider>
 
   )
 

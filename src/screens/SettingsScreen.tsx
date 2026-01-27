@@ -128,7 +128,7 @@ const SettingsScreen = ({ navigation }) => {
                         )}
                 </TouchableOpacity>
 
-                <Text style={styles.versionText} importantForAccessibility="no">Version 1.0.5</Text>
+                <Text style={styles.versionText} importantForAccessibility="no">Version 1.0.7</Text>
             </ScrollView>
         </View>
     )

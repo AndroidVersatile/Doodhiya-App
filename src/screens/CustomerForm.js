@@ -268,7 +268,7 @@ const CustomerFormScreen = ({ route, navigation }) => {
         <ScrollView
           ref={scrollRef}
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={styles.container}
+          contentContainerStyle={[styles.container, { paddingBottom: insets.bottom + Responsive.spacing[10] }]}
         >
           {/* Section 1: Identity */}
           <Text style={styles.sectionHeader}>Identification</Text>

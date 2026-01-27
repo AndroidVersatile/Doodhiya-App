@@ -11,7 +11,7 @@ const TermsAndConditionsScreen = () => {
             <BackHeader title={'Terms & Conditions'} bg={'#F8F9FA'} />
 
             <ScrollView
-                contentContainerStyle={styles.contentContainer}
+                contentContainerStyle={[styles.contentContainer, { paddingBottom: insets.bottom + Responsive.spacing[10] }]}
                 showsVerticalScrollIndicator={false}
                 accessible={true}
                 accessibilityRole="scrollbar"

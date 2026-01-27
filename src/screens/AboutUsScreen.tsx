@@ -4,14 +4,14 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import BackHeader from '../components/BackHeader'
 import { Responsive } from '../theme/responsive';
 const AboutUsScreen = () => {
-        const insets = useSafeAreaInsets()
+    const insets = useSafeAreaInsets()
     return (
-        <View style={[styles.mainContainer,{ paddingTop: insets.top + Responsive.spacing[10] }]}>
+        <View style={[styles.mainContainer, { paddingTop: insets.top + Responsive.spacing[10] }]}>
             <StatusBar backgroundColor={'#F8F9FA'} barStyle={'dark-content'} />
             <BackHeader title={'About Us'} bg={'#F8F9FA'} />
 
             <ScrollView
-                contentContainerStyle={styles.contentContainer}
+                contentContainerStyle={[styles.contentContainer, { paddingBottom: insets.bottom + Responsive.spacing[10] }]}
                 showsVerticalScrollIndicator={false}
                 // Grouping content for screen readers so they read paragraphs as one thought
                 accessible={true}

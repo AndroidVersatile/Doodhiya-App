@@ -1,6 +1,6 @@
 
-import React, { useCallback, useRef, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ScrollView, SectionList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Responsive } from '../theme/responsive';
@@ -20,11 +20,7 @@ const COL_WIDTHS = {
 
 const MilkCard = ({ milkentries, navigation, search, onDelete, filters, }) => {
     // console.log('Milk Entries', milkentries)
-    const flatRef = useRef();
-    const shouldShowDate = (index: number, data: any[]) => {
-        if (index === 0) return true;
-        return data[index].date !== data[index - 1].date;
-    };
+    // const flatRef = useRef();
 
     // 1. Calculate the message directly during render (Derived State)
     const getEmptyMessage = () => {
@@ -48,7 +44,38 @@ const MilkCard = ({ milkentries, navigation, search, onDelete, filters, }) => {
         return "No milk entries recorded yet.";
     };
 
+
+    const parseDDMMYYYY = (date: string) => {
+        const [day, month, year] = date.split('-').map(Number);
+        return new Date(year, month - 1, day);
+    };
+
+    const getDisplayDate = (date: string) => {
+        const today = new Date();
+        const itemDate = parseDDMMYYYY(date);
+
+        today.setHours(0, 0, 0, 0);
+        itemDate.setHours(0, 0, 0, 0);
+
+        const diffDays = Math.floor(
+            (itemDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+        );
+
+        const formatted = itemDate.toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'short'
+        });
+
+        if (diffDays === 0) return `Today, ${formatted}`;
+        if (diffDays === -1) return `Yesterday, ${formatted}`;
+        if (diffDays === 1) return `Tomorrow, ${formatted}`;
+        if (diffDays > 1) return `Upcoming, ${formatted}`;
+
+        return formatted;
+    };
+
     const emptyMsg = getEmptyMessage();
+
     const renderHeader = useCallback(() => (
         <View style={styles.headerRow}
             accessible={true}
@@ -70,89 +97,142 @@ const MilkCard = ({ milkentries, navigation, search, onDelete, filters, }) => {
         </View>
     ), []);
 
-    const renderItem = useCallback(({ item, index }) => {
+
+    const renderSectionHeader = ({ section }) => (
+        <View
+            style={styles.modernDateRow}
+            accessible
+            accessibilityLabel={`Date ${section.title}`}
+        >
+            <View style={styles.dateLine} />
+            <View style={styles.dateBadge}>
+                <Icon name="calendar-month" size={Responsive.fontSize[16]} color="#000" />
+                <Text style={styles.modernDateText}>{section.title}</Text>
+            </View>
+            <View style={styles.dateLine} />
+        </View>
+    );
+    const sections = useMemo(() => {
+        const sorted = [...milkentries].sort(
+            (a, b) =>
+                parseDDMMYYYY(b.date).getTime() -
+                parseDDMMYYYY(a.date).getTime()
+        );
+
+        const map: Record<string, any[]> = {};
+
+        sorted.forEach(item => {
+            if (!map[item.date]) {
+                map[item.date] = [];
+            }
+            map[item.date].push(item);
+        });
+
+        return Object.keys(map).map(date => ({
+            title: getDisplayDate(date),
+            rawDate: date, // for key
+            data: map[date],
+        }));
+    }, [milkentries]);
+
+    const renderItem = ({ item, index, section }) => {
         const isMorning = item.time_period?.toLowerCase().includes('morning');
-        const showDate = shouldShowDate(index, milkentries);
-        const rowSummary = `${item.name}, ${item.milk_liter} Liters, Total ${item.amount} Rupees, ${item.time_period} session on ${item.date}`;
+        const displayDate = section.title;
+
+        const rowSummary = `${item.name}, ${item.milk_liter} Liters, Total ${item.amount} Rupees, ${item.time_period} session on ${displayDate}`;
+
         return (
-            <>
-                {showDate && (
-                    <View style={styles.modernDateRow} accessible={true}
-                        accessibilityRole="text"
-                        accessibilityLabel={`Date ${item.date}`}>
-                        <View style={styles.dateLine} />
-                        <View style={styles.dateBadge}>
-                            <Icon name='calendar-month' size={Responsive.fontSize[16]} color='#b9a1a1' />
-                            <Text style={styles.modernDateText}>{item.date}</Text>
-                        </View>
-                        <View style={styles.dateLine} />
-                    </View>
-                )}
-                <View
-                    style={[styles.row, index % 2 === 0 ? styles.evenRow : styles.oddRow]}
-                    accessible={true}
-                    accessibilityLabel={rowSummary}
-                >
-                    <Text style={[styles.indexCell, { width: COL_WIDTHS.index - 5 }]}>{index + 1}</Text>
+            <View
+                style={[styles.row, index % 2 === 0 ? styles.evenRow : styles.oddRow]}
+                accessible
+                accessibilityLabel={rowSummary}
+            >
+                <Text style={[styles.indexCell, { width: COL_WIDTHS.index - 5 }]}>
+                    {index + 1}
+                </Text>
 
-                    <View style={{ width: COL_WIDTHS.name }}>
-                        <Text style={styles.nameText} numberOfLines={1}>{item.name}</Text>
-                    </View>
-
-                    <Text style={[styles.cell, { width: COL_WIDTHS.code }]}>{item.customer_code}</Text>
-
-                    <Text style={[styles.quantityText, { width: COL_WIDTHS.milk_liter }]}>{item.milk_liter} L</Text>
-
-                    <Text style={[styles.amountText, { width: COL_WIDTHS.amount }]}>₹{item.amount}</Text>
-
-                    <View style={{ width: COL_WIDTHS.time_period }}>
-                        <View style={[styles.sessionBadge, { backgroundColor: isMorning ? '#FFF9C4' : '#E8EAF6' }]}
-                            accessible={true}
-                            accessibilityLabel={`Session ${item.time_period}`}
-
-                        >
-                            <Icon name={isMorning ? "wb-sunny" : "nights-stay"} size={Responsive.fontSize[12]} color={isMorning ? "#FBC02D" : "#3F51B5"} />
-                            <Text style={[styles.sessionText, { color: isMorning ? "#916F00" : "#283593" }]}>
-                                {item.time_period}
-                            </Text>
-                        </View>
-                    </View>
-
-                    <Text style={[styles.cell, { width: COL_WIDTHS.date }]}>{item.date}</Text>
-                    <Text style={[styles.cell, { width: COL_WIDTHS.delivery_time }]}>{item.delivery_time}</Text>
-
-                    <Text style={[styles.cell, { width: COL_WIDTHS.milk_type }]}>{item.milk_type}</Text>
-                    <Text style={[styles.cell, { width: COL_WIDTHS.milk_type }]}>{item.rate}</Text>
-
-                    <Text
-                        accessibilityLabel={`Address ${item.delivery_address}`}
-                        style={[styles.cell, { width: COL_WIDTHS.delivery_address }]} numberOfLines={2}>
-                        {item.delivery_address}
+                <View style={{ width: COL_WIDTHS.name }}>
+                    <Text style={styles.nameText} numberOfLines={1}>
+                        {item.name}
                     </Text>
+                </View>
 
-                    <View style={[styles.actionContainer, { width: COL_WIDTHS.action }]}>
-                        <TouchableOpacity
-                            style={[styles.deleteButton, { backgroundColor: '#E3F2FD', }]}
-                            onPress={() => navigation.navigate('MilkEntry', { item })}
-                            accessibilityLabel={`Edit entry for ${item.name}`}
-                            accessibilityRole="button"
+                <Text style={[styles.cell, { width: COL_WIDTHS.code }]}>
+                    {item.customer_code}
+                </Text>
 
+                <Text style={[styles.quantityText, { width: COL_WIDTHS.milk_liter }]}>
+                    {item.milk_liter} L
+                </Text>
+
+                <Text style={[styles.amountText, { width: COL_WIDTHS.amount }]}>
+                    ₹{item.amount}
+                </Text>
+
+                <View style={{ width: COL_WIDTHS.time_period }}>
+                    <View
+                        style={[
+                            styles.sessionBadge,
+                            { backgroundColor: isMorning ? '#FFF9C4' : '#E8EAF6' },
+                        ]}
+                    >
+                        <Icon
+                            name={isMorning ? 'wb-sunny' : 'nights-stay'}
+                            size={12}
+                            color={isMorning ? '#FBC02D' : '#3F51B5'}
+                        />
+                        <Text
+                            style={[
+                                styles.sessionText,
+                                { color: isMorning ? '#916F00' : '#283593' },
+                            ]}
                         >
-                            <Icon name="edit-square" size={20} color="#1976D2" />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={styles.deleteButton}
-                            onPress={() => onDelete(item.id)}
-                            accessibilityLabel={`Delete entry for ${item.name}`}
-                            accessibilityRole="button"
-                        >
-                            <Icon name="delete-outline" size={Responsive.fontSize[20]} color="#FF5252" />
-                        </TouchableOpacity>
+                            {item.time_period}
+                        </Text>
                     </View>
                 </View>
-            </>
+
+                <Text style={[styles.cell, { width: COL_WIDTHS.date }]}>
+                    {item.date}
+                </Text>
+
+                <Text style={[styles.cell, { width: COL_WIDTHS.delivery_time }]}>
+                    {item.delivery_time}
+                </Text>
+
+                <Text style={[styles.cell, { width: COL_WIDTHS.milk_type }]}>
+                    {item.milk_type}
+                </Text>
+
+                <Text style={[styles.cell, { width: COL_WIDTHS.milk_type }]}>
+                    {item.rate}
+                </Text>
+
+                <Text
+                    style={[styles.cell, { width: COL_WIDTHS.delivery_address }]}
+                    numberOfLines={2}
+                >
+                    {item.delivery_address}
+                </Text>
+
+                <View style={[styles.actionContainer, { width: COL_WIDTHS.action }]}>
+                    <TouchableOpacity
+                        style={[styles.deleteButton, { backgroundColor: '#E3F2FD' }]}
+                        onPress={() => navigation.navigate('MilkEntry', { item })}
+                    >
+                        <Icon name="edit-square" size={20} color="#1976D2" />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={styles.deleteButton}
+                        onPress={() => onDelete(item.id)}
+                    >
+                        <Icon name="delete-outline" size={20} color="#FF5252" />
+                    </TouchableOpacity>
+                </View>
+            </View>
         );
-    }, [onDelete, milkentries]);
+    };
 
     const EmptyComponent = () => (
         <View style={styles.emptyContainer}
@@ -174,15 +254,16 @@ const MilkCard = ({ milkentries, navigation, search, onDelete, filters, }) => {
                     accessibilityRole="scrollbar"
                     accessibilityLabel="Milk entry table"
                 >
-                    <FlatList
-                        ref={flatRef}
-                        data={milkentries}
+                    <SectionList
+                        sections={sections}
                         keyExtractor={(item) => item.id.toString()}
-                        ListHeaderComponent={renderHeader}
-                        stickyHeaderIndices={[0]}
                         renderItem={renderItem}
+                        renderSectionHeader={renderSectionHeader}
+                        ListHeaderComponent={renderHeader}
+                        stickySectionHeadersEnabled
                         contentContainerStyle={styles.listPadding}
                     />
+
                 </ScrollView>
             )}
         </View>
@@ -305,7 +386,7 @@ const styles = StyleSheet.create({
     dateBadge: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: '#f3c8c8',
         paddingHorizontal: Responsive.size.wp(3.5),
         paddingVertical: Responsive.size.hp(0.8),
         borderRadius: Responsive.radius[20],

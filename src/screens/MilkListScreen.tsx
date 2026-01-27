@@ -211,7 +211,7 @@ const MilkListScreen = () => {
 
         <View style={[styles.container, {
             paddingTop: insets.top + Responsive.spacing[10],
-            paddingBottom: insets.bottom
+            paddingBottom: insets.bottom + Responsive.spacing[10],
 
         }]} >
             <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
@@ -495,7 +495,7 @@ const styles = StyleSheet.create({
     },
     floatBtn: {
         position: 'absolute',
-        bottom: Responsive.size.hp(7.5),
+        bottom: Responsive.size.hp(9.5),
         right: Responsive.size.wp(6),
         backgroundColor: '#b9a1a1',
         width: Responsive.spacing[55],

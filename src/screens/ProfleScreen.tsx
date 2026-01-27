@@ -312,7 +312,7 @@ const ProfileScreen = () => {
                 <ScrollView
                     ref={scrollRef}
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={styles.scrollContent}
+                    contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + Responsive.spacing[10] }]}
                     keyboardShouldPersistTaps="handled"
                 >
                     {/* Header Section */}
