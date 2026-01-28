@@ -47,9 +47,12 @@ const toastConfig = {
     error: (props) => (
         <ErrorToast
             {...props}
-            style={{ backgroundColor: '#D32F2F', borderLeftColor: '#B71C1C' }}
-            text1Style={{ color: 'white' }}
-            text2Style={{ color: 'white' }}
+            style={{
+                backgroundColor: '#D32F2F', borderLeftColor: '#B71C1C', height: Responsive.size.hp(12),
+                borderRadius: Responsive.radius[10],
+            }}
+            text1Style={{ color: 'white', fontSize: Responsive.fontSize[16] }}
+            text2Style={{ color: 'white', fontSize: Responsive.fontSize[12] }}
         />
     )
 };

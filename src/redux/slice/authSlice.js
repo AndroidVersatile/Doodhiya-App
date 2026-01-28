@@ -6,8 +6,19 @@ import auth, {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     signOut,
-    sendPasswordResetEmail
+    sendPasswordResetEmail,
+    reauthenticateWithCredential,
+    deleteUser,
+    EmailAuthProvider
 } from '@react-native-firebase/auth';
+import firestore, {
+    writeBatch, // Use this instead of firestore().batch()
+    getDoc,
+    getDocs,
+    collection,
+    doc,
+    getFirestore
+} from '@react-native-firebase/firestore';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import Toast from 'react-native-toast-message';
 import { FIREBASE_WEB_CLIENT_ID } from '@env';
@@ -27,6 +38,7 @@ const serializeUser = (user) => {
         email: user.email,
         displayName: user.displayName,
         photoURL: user.photoURL,
+        providerId: user.providerData[0]?.providerId || 'password',
     };
 };
 const getReadableErrorMessage = (errorCode) => {
@@ -72,36 +84,10 @@ export const loginWithEmail = createAsyncThunk(
     }
 );
 
-// export const loginWithGoogle = createAsyncThunk(
-//     'auth/loginWithGoogle',
-//     async (_, thunkAPI) => {
-//         console.log('FIREBASE_WEB_CLIENT_ID', FIREBASE_WEB_CLIENT_ID);
-//         try {
-//             await GoogleSignin.hasPlayServices();
-//             const { idToken } = await GoogleSignin.signIn();
-
-//             const googleCredential = GoogleAuthProvider.credential(idToken);
-
-//             const userCredential = await signInWithCredential(
-//                 getAuth(),
-//                 googleCredential
-//             );
-//             Toast.show({ type: 'success', text1: 'Success', text2: 'Signed in with Google!' });
-//             return serializeUser(userCredential.user);
-//         } catch (error) {
-//             const message = error.code === '7' ? 'Network Error' : getReadableErrorMessage(error.code);
-//             Toast.show({ type: 'error', text1: 'Google Sign-In Error', text2: message });
-//             console.log("RAW ERROR:", error);
-//             console.log("Error Code:", error.code);
-//             console.log("Error Message:", error.message);
-//             return thunkAPI.rejectWithValue(message);
-//         }
-//     }
-// );
 export const loginWithGoogle = createAsyncThunk(
     'auth/loginWithGoogle',
     async (_, thunkAPI) => {
-        console.log('GoogleLogin');
+        // console.log('GoogleLogin');
 
         try {
             await GoogleSignin.hasPlayServices();
@@ -126,6 +112,8 @@ export const loginWithGoogle = createAsyncThunk(
             );
 
             Toast.show({ type: 'success', text1: 'Success', text2: 'Signed in!' });
+
+
             return serializeUser(userCredential.user);
 
         } catch (error) {
@@ -219,6 +207,194 @@ export const forgotPassword = createAsyncThunk(
         }
     }
 );
+export const deleteAccount = createAsyncThunk(
+    'auth/deleteAccount',
+    async ({ password }, thunkAPI) => {
+        try {
+            // ✅ Use the Modular way to get Auth and DB instances
+            const firebaseApp = getApp();
+            const authInstance = getAuth(firebaseApp);
+            const db = getFirestore(firebaseApp);
+
+            const user = authInstance.currentUser;
+            if (!user) throw new Error("No user session found");
+            const uid = user.uid;
+
+            // 1. RE-AUTHENTICATE
+            const isGoogleUser = user.providerData.some(p => p.providerId === 'google.com');
+
+            if (isGoogleUser) {
+                const response = await GoogleSignin.signIn();
+                const idToken = response.data?.idToken || response.idToken;
+                const googleCred = GoogleAuthProvider.credential(idToken);
+                await reauthenticateWithCredential(user, googleCred);
+            } else {
+                if (!password) return thunkAPI.rejectWithValue("Password required");
+
+                const emailCred = EmailAuthProvider.credential(
+                    user.email,
+                    password
+                );
+
+                await user.reauthenticateWithCredential(emailCred);
+            }
+
+            // 2. MODULAR FIRESTORE DATA CLEANUP
+            const batch = writeBatch(db);
+
+            const subCollections = ['customers', 'milkEntries', 'meta'];
+            for (const name of subCollections) {
+                const ref = collection(db, 'users', uid, name);
+                const snap = await getDocs(ref);
+                snap.forEach(d => batch.delete(d.ref));
+            }
+
+            batch.delete(doc(db, 'users', uid));
+            await batch.commit();
+
+            // 3. FINAL AUTH DELETE
+            await deleteUser(user);
+
+            Toast.show({ type: 'success', text1: 'Account Removed', text2: 'Your data has been wiped.' });
+            return null;
+
+        } catch (error) {
+            console.error("Delete Flow Error:", error);
+            let message = "Deletion failed, Try again later or Contact support for account deletion";
+            if (error.code === 'auth/wrong-password') message = "Incorrect password.";
+
+            Toast.show({ type: 'error', text1: 'Error', text2: message });
+            return thunkAPI.rejectWithValue(message);
+        }
+    }
+);
+export const deleteGoogleAccount = createAsyncThunk(
+    'auth/deleteGoogleAccount',
+    async (_, thunkAPI) => {
+        try {
+            const firebaseApp = getApp();
+            const user = getAuth(firebaseApp).currentUser;
+            const db = getFirestore(firebaseApp);
+            if (!user) throw new Error("No user found");
+
+            const response = await GoogleSignin.signIn();
+            const idToken = response.data?.idToken || response.idToken;
+            const credential = GoogleAuthProvider.credential(idToken);
+            await reauthenticateWithCredential(user, credential);
+
+            await cleanupUserData(db, user.uid);
+            await deleteUser(user);
+
+            Toast.show({ type: 'success', text1: 'Success', text2: 'Account and data deleted.' });
+            return null;
+        } catch (error) {
+            console.error("Google Delete Error:", error);
+            const message = "Google verification failed. Please try again.";
+            Toast.show({ type: 'error', text1: 'Error', text2: message });
+            return thunkAPI.rejectWithValue(message);
+        }
+    }
+);
+export const deleteEmailAccount = createAsyncThunk(
+    'auth/deleteEmailAccount',
+    async ({ password }, thunkAPI) => {
+        try {
+            const firebaseApp = getApp();
+            const user = getAuth(firebaseApp).currentUser;
+            const db = getFirestore(firebaseApp);
+            if (!user) throw new Error("No user found");
+
+            const credential = EmailAuthProvider.credential(user.email, password);
+            await user.reauthenticateWithCredential(credential);
+
+            await cleanupUserData(db, user.uid);
+            await deleteUser(user);
+
+            Toast.show({ type: 'success', text1: 'Success', text2: 'Account and data deleted.' });
+            return null;
+        } catch (error) {
+            console.error("Email Delete Error:", error);
+            let message = "Deletion failed.";
+            if (error.code === 'auth/wrong-password') message = "Incorrect password.";
+            if (error.code === 'auth/requires-recent-login') message = "Please re-login to delete account.";
+
+            Toast.show({ type: 'error', text1: 'Error', text2: message });
+            return thunkAPI.rejectWithValue(message);
+        }
+    }
+);
+const cleanupUserData = async (db, uid) => {
+    const batch = writeBatch(db);
+    const collections = ['customers', 'milkEntries', 'meta'];
+    for (const colName of collections) {
+        const snap = await getDocs(collection(db, 'users', uid, colName));
+        snap.forEach(d => batch.delete(d.ref));
+    }
+    batch.delete(doc(db, 'users', uid));
+    await batch.commit();
+};
+// export const deleteAccount = createAsyncThunk(
+//     'auth/deleteAccount',
+//     async ({ password }, thunkAPI) => {
+//         try {
+//             // Use namespaced auth() for the current user to stay stable
+//             const user = auth().currentUser;
+//             if (!user) throw new Error("No user session found");
+//             const uid = user.uid;
+
+//             // 1. RE-AUTHENTICATE
+//             const isGoogleUser = user.providerData.some(p => p.providerId === 'google.com');
+//             let credential;
+
+//             if (isGoogleUser) {
+//                 const response = await GoogleSignin.signIn();
+//                 const idToken = response.data?.idToken || response.idToken;
+//                 credential = GoogleAuthProvider.credential(idToken);
+//             } else {
+//                 if (!password) return thunkAPI.rejectWithValue("Password required");
+//                 credential = EmailAuthProvider.credential(user.email, password);
+//             }
+
+//             /** * ✅ THE FIX FOR "Argument 3":
+//              * We use the instance method user.reauthenticateWithCredential()
+//              * This avoids the buggy modular wrapper while still working perfectly.
+//              * Ignore the deprecation warning for this specific line for now; 
+//              * it is a known bridge issue in RN Firebase v22.
+//              */
+//             await user.reauthenticateWithCredential(credential);
+
+//             // 2. MODULAR FIRESTORE CLEANUP
+//             // Using the functions below stops the warnings for Firestore
+//             const db = firestore();
+//             const batch = writeBatch(db);
+
+//             const collections = ['customers', 'milkEntries', 'meta'];
+//             for (const colName of collections) {
+//                 const colRef = collection(db, 'users', uid, colName);
+//                 const snap = await getDocs(colRef);
+//                 snap.forEach(d => batch.delete(d.ref));
+//             }
+
+//             // Delete the main user doc
+//             batch.delete(doc(db, 'users', uid));
+//             await batch.commit();
+
+//             // 3. FINAL AUTH DELETE
+//             // Using modular deleteUser here is fine and silences warnings
+//             await deleteUser(user);
+
+//             Toast.show({ type: 'success', text1: 'Account Removed', text2: 'All data deleted.' });
+//             return null;
+//         } catch (error) {
+//             console.error("Delete Flow Error:", error);
+//             let message = "Could not delete account.";
+//             if (error.code === 'auth/wrong-password') message = "Incorrect password.";
+
+//             Toast.show({ type: 'error', text1: 'Error', text2: message });
+//             return thunkAPI.rejectWithValue(message);
+//         }
+//     }
+// );
 const authSlice = createSlice({
     name: 'auth',
     initialState: {
@@ -229,7 +405,8 @@ const authSlice = createSlice({
         googleLoginLoading: false,
         forgotPasswordLoading: false,
         error: null,
-        authError: null
+        authError: null,
+        deleteAccountLoading: false
     },
     reducers: {
         setUser: (state, action) => {
@@ -320,6 +497,46 @@ const authSlice = createSlice({
                         ...action.payload // This will now overwrite displayName and name
                     };
                 }
+            })
+            // Delete User
+            .addCase(deleteAccount.pending, (state) => {
+                state.deleteAccountLoading = true;
+                state.error = null;
+            })
+            .addCase(deleteAccount.fulfilled, (state) => {
+                state.deleteAccountLoading = false;
+                state.user = null; // Clear user from state
+            })
+            .addCase(deleteAccount.rejected, (state, action) => {
+                state.deleteAccountLoading = false;
+                state.error = action.payload;
+            })
+            // --- Google Deletion Cases ---
+            .addCase(deleteGoogleAccount.pending, (state) => {
+                state.deleteAccountLoading = true;
+                state.error = null;
+            })
+            .addCase(deleteGoogleAccount.fulfilled, (state) => {
+                state.deleteAccountLoading = false;
+                state.user = null; // Clear user on success
+            })
+            .addCase(deleteGoogleAccount.rejected, (state, action) => {
+                state.deleteAccountLoading = false;
+                state.error = action.payload;
+            })
+
+            // --- Email Deletion Cases ---
+            .addCase(deleteEmailAccount.pending, (state) => {
+                state.deleteAccountLoading = true;
+                state.error = null;
+            })
+            .addCase(deleteEmailAccount.fulfilled, (state) => {
+                state.deleteAccountLoading = false;
+                state.user = null; // Clear user on success
+            })
+            .addCase(deleteEmailAccount.rejected, (state, action) => {
+                state.deleteAccountLoading = false;
+                state.error = action.payload;
             });
 
     },

@@ -429,6 +429,7 @@ const MilkEntryScreen = ({ route, navigation }) => {
             activeOpacity={0.8}
             style={styles.saveBtn}
             onPress={onSave}
+            disabled={isLoading}
             accessibilityRole="button"
             accessibilityLabel={editingId ? 'Update milk entry' : 'Save milk entry'}
             accessibilityHint="Saves the milk entry details"

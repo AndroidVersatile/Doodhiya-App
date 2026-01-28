@@ -42,6 +42,10 @@ const ForgetPasswordScreen = ({ navigation }) => {
     };
 
     const handleReset = async () => {
+        setShowMessage({
+            showMsg: false,
+            successMsg: '',
+        })
         let newErrors = {};
         if (!email.trim()) {
             newErrors.email = 'Email is required';
@@ -152,6 +156,7 @@ const ForgetPasswordScreen = ({ navigation }) => {
                                     keyboardType='email-address'
                                     style={styles.inputStyle}
                                     placeholderTextColor={'#b9a1a1'}
+                                    autoCapitalize="none"
                                     accessibilityLabel="Email address"
                                     accessibilityHint="Enter your registered email to reset your password"
                                 />

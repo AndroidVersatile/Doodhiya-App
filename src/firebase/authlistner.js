@@ -19,12 +19,8 @@ export const listenToAuthChanges = (dispatch) => {
             // 1️⃣ Auth state
             // console.log('User in auth listner', user);
 
-            dispatch(setUser({
-                uid: user.uid,
-                email: user.email,
-                displayName: user.displayName,
-                photoURL: user.photoURL,
-            }));
+            const serialized = serializeUser(user);
+            dispatch(setUser(serialized));
 
             // 2️⃣ Ensure Firestore profile exists
             // await dispatch(
@@ -36,7 +32,7 @@ export const listenToAuthChanges = (dispatch) => {
             await dispatch(
                 createUserProfile({
                     uid: user.uid,
-                    provider: user.providerData[0]?.providerId || 'email',
+                    provider: user.providerData[0]?.providerId,
                 })
             )
 
@@ -47,4 +43,15 @@ export const listenToAuthChanges = (dispatch) => {
 
         }
     });
+};
+const serializeUser = (user) => {
+    if (!user) return null;
+    return {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+        // Firebase providerId is usually 'password' or 'google.com'
+        providerId: user.providerData[0]?.providerId || 'password',
+    };
 };

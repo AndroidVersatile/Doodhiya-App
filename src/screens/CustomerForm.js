@@ -536,6 +536,7 @@ const CustomerFormScreen = ({ route, navigation }) => {
             style={styles.saveBtn}
             activeOpacity={0.7}
             onPress={onSave}
+            disabled={isLoading}
             accessibilityRole="button"
             accessibilityLabel={editingId ? 'Update Customer' : 'Save Customer'}
           >
