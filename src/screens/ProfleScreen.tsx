@@ -498,9 +498,9 @@ const ProfileScreen = () => {
             </KeyboardAvoidingView>
             <TrueSheet
                 ref={sheet}
-                // 
                 detents={['auto', 1, 1]}
                 backgroundBlur="dark"
+                draggable={false}
                 blurOptions={{
                     intensity: 15,
                     interaction: false,

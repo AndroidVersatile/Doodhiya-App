@@ -1,6 +1,6 @@
 {
   "name": "MilkManagementApp",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -25,6 +25,7 @@
     "react": "19.2.0",
     "react-native": "0.83.0",
     "react-native-bootsplash": "^6.3.12",
+    "react-native-device-info": "^15.0.1",
     "react-native-dotenv": "^3.4.11",
     "react-native-edge-to-edge": "^1.7.0",
     "react-native-element-dropdown": "^2.12.4",

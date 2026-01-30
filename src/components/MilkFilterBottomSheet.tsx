@@ -178,6 +178,7 @@ const MilkFilterBottomSheet: React.FC<Props> = ({
                 ref={sheet}
                 detents={['auto', 1]}
                 backgroundBlur="dark"
+                draggable={false}
                 blurOptions={{
                     intensity: 8,
                     interaction: false,

@@ -520,7 +520,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     minHeight: Responsive.spacing[24],
-    color: '#000'
+    color: '#000',
+    height: Responsive.size.hp(5.5),
 
   },
   inputFocused: {

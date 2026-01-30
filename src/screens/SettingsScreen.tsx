@@ -10,7 +10,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Responsive } from '../theme/responsive';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteAccount, deleteEmailAccount, deleteGoogleAccount, logoutUser } from '../redux/slice/authSlice';
-
+import DeviceInfo from 'react-native-device-info';
+const version = DeviceInfo.getVersion()
 const SettingsScreen = ({ navigation }) => {
     const insets = useSafeAreaInsets()
     const [deleteType, setDeleteType] = useState(null);
@@ -167,7 +168,7 @@ const SettingsScreen = ({ navigation }) => {
                         )}
                 </TouchableOpacity>
 
-                <Text style={styles.versionText} importantForAccessibility="no">Version 1.0.8</Text>
+                <Text style={styles.versionText} importantForAccessibility="no">App Version {version}</Text>
                 <Modal
                     visible={isDeleteModalVisible}
                     transparent={true}
@@ -191,7 +192,7 @@ const SettingsScreen = ({ navigation }) => {
                                 <ScrollView
                                     bounces={false}
                                     style={{ flexShrink: 1 }} // Crucial: lets it shrink
-                                    contentContainerStyle={{ paddingBottom: 10 }}
+                                    contentContainerStyle={{ paddingBottom: Responsive.spacing[10] }}
                                     keyboardShouldPersistTaps="handled"
                                 >
                                     <Text style={styles.modalTitle}>Delete Account</Text>
