@@ -8,6 +8,7 @@ import CustomLoader from '../components/CustomLoader';
 import { fetchCustomers } from '../redux/slice/customersSlice';
 import { getMilkEntries } from '../redux/slice/milkSlice';
 import { useFocusEffect } from '@react-navigation/native';
+import HomeSkeleton from '../components/HomeSkelaton';
 const HomeScreen = ({ navigation }) => {
 
   const [refreshing, setRefreshing] = useState(false);
@@ -121,7 +122,9 @@ const HomeScreen = ({ navigation }) => {
   };
 
   if (isLoading) {
-    return <CustomLoader />
+    // return <CustomLoader />
+    return <HomeSkeleton />
+
   }
   return (
     <View style={styles.container} accessible={false} >
@@ -292,117 +295,6 @@ const MenuCard = ({ title, subtitle, icon, color, iconColor, onPress }) => (
   </TouchableOpacity>
 );
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#F8F9FA',
-//   },
-//   header: {
-//     backgroundColor: '#1A237E',
-//     paddingHorizontal: wp('6%'), // Scalable horizontal padding
-//     paddingTop: hp('2.5%'),
-//     paddingBottom: hp('5%'),
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     alignItems: 'center',
-//     borderBottomLeftRadius: wp('8%'), // Rounded corners scale with width
-//     borderBottomRightRadius: wp('8%'),
-//     elevation: 8,
-//     shadowColor: '#000',
-//     shadowOffset: { width: 0, height: 4 },
-//     shadowOpacity: 0.1,
-//     shadowRadius: 10,
-//   },
-//   welcomeText: {
-//     color: '#C5CAE9',
-//     fontSize: hp('1.8%'), // Text scales with screen height
-//     fontWeight: '500',
-//   },
-//   headerTitle: {
-//     fontSize: hp('3%'), // Large title scales proportionally
-//     fontWeight: '800',
-//     color: '#fff',
-//   },
-//   profileCircle: {
-//     width: wp('12%'), // Circle stays circular on all screens
-//     height: wp('12%'),
-//     borderRadius: wp('6%'),
-//     backgroundColor: 'rgba(255,255,255,0.2)',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   scrollContent: {
-//     padding: wp('6%'),
-//   },
-//   statsContainer: {
-//     backgroundColor: '#fff',
-//     borderRadius: wp('5%'),
-//     padding: wp('5%'),
-//     marginTop: hp('1%'), // Responsively pull into header
-//     flexDirection: 'row',
-//     elevation: 10,
-//     shadowColor: '#000',
-//     shadowOffset: { width: 0, height: 4 },
-//     shadowOpacity: 0.1,
-//     shadowRadius: 10,
-//     marginBottom: hp('3.5%'),
-//   },
-//   statBox: {
-//     flex: 1,
-//     alignItems: 'center',
-//   },
-//   statLabel: {
-//     fontSize: hp('1.5%'),
-//     color: '#777',
-//     marginBottom: hp('0.5%'),
-//   },
-//   statValue: {
-//     fontSize: hp('2.4%'),
-//     fontWeight: '700',
-//     color: '#1A237E',
-//   },
-//   sectionTitle: {
-//     fontSize: hp('2.2%'),
-//     fontWeight: '700',
-//     color: '#333',
-//     marginBottom: hp('2%'),
-//   },
-//   gridContainer: {
-//     flexDirection: 'row',
-//     flexWrap: 'wrap',
-//     justifyContent: 'space-between',
-//   },
-//   card: {
-//     backgroundColor: '#fff',
-//     width: wp('43%'), // Adjusted to ensure gap is consistent
-//     padding: wp('5%'),
-//     borderRadius: wp('6%'),
-//     marginBottom: hp('2%'),
-//     elevation: 4,
-//     shadowColor: '#000',
-//     shadowOffset: { width: 0, height: 2 },
-//     shadowOpacity: 0.05,
-//     shadowRadius: 5,
-//   },
-//   iconContainer: {
-//     width: wp('13%'),
-//     height: wp('13%'),
-//     borderRadius: wp('4%'),
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     marginBottom: hp('2%'),
-//   },
-//   cardTitle: {
-//     fontSize: hp('1.9%'),
-//     fontWeight: '700',
-//     color: '#222',
-//   },
-//   cardSubtitle: {
-//     fontSize: hp('1.4%'),
-//     color: '#999',
-//     marginTop: hp('0.5%'),
-//   },
-// });
 const styles = StyleSheet.create({
   container: {
     flex: 1,
