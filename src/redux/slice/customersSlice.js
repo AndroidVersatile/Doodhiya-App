@@ -7,6 +7,7 @@ import { clearMilkByCustomer } from './milkSlice';
 export const createCustomer = createAsyncThunk(
     'customer/create',
     async ({ uid, customer }, thunkAPI) => {
+        
         // console.log('Customer payload in thunk', uid, customer);
         try {
             const createdCustomer = await addCustomer({ uid, customer });

@@ -9,6 +9,7 @@ import { fetchCustomers } from '../redux/slice/customersSlice';
 import { getMilkEntries } from '../redux/slice/milkSlice';
 import { useFocusEffect } from '@react-navigation/native';
 import HomeSkeleton from '../components/HomeSkelaton';
+import { OfflineBar } from '../components/OffineBar';
 const HomeScreen = ({ navigation }) => {
 
   const [refreshing, setRefreshing] = useState(false);
@@ -206,6 +207,7 @@ const HomeScreen = ({ navigation }) => {
           />
         }
       >
+        <OfflineBar title={'No Internet Connection'} />
         {/* 2. Stats/Summary Section  */}
         <View
           style={styles.statsContainer}

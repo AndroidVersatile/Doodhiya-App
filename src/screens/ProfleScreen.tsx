@@ -10,6 +10,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { deleteProfilePhoto, updateProfilePhoto, updateUserProfile } from '../redux/slice/userProfileSlice';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import { pickImageFromCamera, pickImageFromGallery } from '../utitlies/imageCropPicker';
+import { OfflineBar } from '../components/OffineBar';
 
 // const { width } = Dimensions.get('window');
 
@@ -309,6 +310,7 @@ const ProfileScreen = () => {
                 style={{ flex: 1 }}
                 keyboardVerticalOffset={Platform.OS === 'android' ? StatusBar.currentHeight ?? 0 : 0}
             >
+
                 <ScrollView
                     ref={scrollRef}
                     showsVerticalScrollIndicator={false}
@@ -316,6 +318,7 @@ const ProfileScreen = () => {
                     keyboardShouldPersistTaps="handled"
                 >
                     {/* Header Section */}
+                    <OfflineBar title={'You are currently offline'} />
                     <View style={styles.headerSection}>
 
                         <View style={styles.imageView}>

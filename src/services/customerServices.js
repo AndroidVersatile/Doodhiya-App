@@ -119,7 +119,7 @@ export const getNextCustomerCode = async (uid) => {
 
         return `CUST${nextNumber.toString().padStart(3, '0')}`;
     } catch (error) {
-        console.log('CUSTOMER CODE ERROR:', error);
+        // console.log('CUSTOMER CODE ERROR:', error);
 
         Toast.show({
             type: 'info',

@@ -4,6 +4,8 @@ import authReducer from "../slice/authSlice";
 import userReducer from "../slice/userProfileSlice";
 import customerReducer from "../slice/customersSlice";
 import milkReducer from "../slice/milkSlice"
+import networkReducer from "../slice/networkSlice"
+import networkGuardMiddleware from './networkGaurd';
 
 export const store = configureStore({
     reducer: {
@@ -11,11 +13,13 @@ export const store = configureStore({
         user: userReducer,
         customer: customerReducer,
         milk: milkReducer,
+        network: networkReducer,
 
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
-            serializableCheck: false, // Required for Firebase objects
-        }),
+            serializableCheck: false,
+            // }),
+        }).concat(networkGuardMiddleware),
 
 });
