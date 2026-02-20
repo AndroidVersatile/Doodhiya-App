@@ -501,13 +501,14 @@ const ProfileScreen = () => {
             </KeyboardAvoidingView>
             <TrueSheet
                 ref={sheet}
-                detents={['auto', 1, 1]}
+                detents={['auto']}
                 backgroundBlur="dark"
-                draggable={false}
+                // draggable={false}
                 blurOptions={{
                     intensity: 15,
                     interaction: false,
                 }}
+                backgroundColor={'#fff'}
                 cornerRadius={Responsive.radius[24]}
                 accessibilityViewIsModal={true}
             >
@@ -724,7 +725,7 @@ const styles = StyleSheet.create({
     },
     // True Sheet Styles
     trueSheetContainer: {
-        backgroundColor: '#fff',
+        backgroundColor: 'transparent',
         paddingHorizontal: Responsive.spacing[24],
         paddingTop: Responsive.spacing[16],
         paddingBottom: Responsive.spacing[40],

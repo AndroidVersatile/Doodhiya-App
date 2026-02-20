@@ -10,7 +10,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 const LoginScreen = ({ navigation }) => {
     const insets = useSafeAreaInsets();
 
-    const { loginLoading, error, googleLoading } = useSelector((state: any) => state.auth)
+    const { loginLoading, error, googleLoginLoading } = useSelector((state: any) => state.auth)
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [focusedField, setFocusedField] = useState(null);
@@ -315,7 +315,7 @@ const LoginScreen = ({ navigation }) => {
                                 {loginLoading ? <ActivityIndicator size={Responsive.fontSize[28]} color={'#fff'} /> : <Text style={styles.loginBtnText}>Login</Text>}
                             </TouchableOpacity>
                             <TouchableOpacity
-                                disabled={googleLoading}
+                                disabled={googleLoginLoading}
                                 onPress={handleGoogleLogin}
                                 activeOpacity={0.7}
                                 accessibilityRole="button"
@@ -323,12 +323,11 @@ const LoginScreen = ({ navigation }) => {
                                 accessibilityHint="Logs in using your Google account"
                                 style={styles.googleLoginBtn}>
                                 {
-                                    googleLoading ?
+                                    googleLoginLoading ?
                                         <>
                                             <ActivityIndicator size={Responsive.fontSize[28]} color={'#ccc'} />
                                             <Text style={styles.googleLoginBtnText}>Please wait....</Text>
                                         </>
-
                                         :
                                         <>
                                             <Image

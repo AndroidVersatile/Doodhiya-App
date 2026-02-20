@@ -14,6 +14,8 @@ import {
 import { getApp } from '@react-native-firebase/app';
 import Toast from 'react-native-toast-message';
 const db = getFirestore(getApp());
+
+
 export const addCustomer = async ({ uid, customer }) => {
     const counterRef = doc(db, 'users', uid, 'meta', 'customerCounter');
     const customersRef = collection(db, 'users', uid, 'customers');

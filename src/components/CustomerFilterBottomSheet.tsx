@@ -70,10 +70,9 @@ const CustomerFilterBottomSheet: React.FC<Props> = ({
         <>
             <TrueSheet
                 ref={sheet}
-                // 
-                detents={['auto', 1, 1]}
+                detents={['auto']}
                 backgroundBlur="dark"
-                draggable={false}
+                // draggable={false}
                 blurOptions={{
                     intensity: 15,
                     interaction: false,
